@@ -2,16 +2,17 @@
 #define _TEST_APP
 
 #include "ofMain.h"
-#include "ofxOpenNI.h"
 #include "ofxAudioUnit.h"
 #include "ofxCv.h"
 #include "ofxPostProcessing.h"
-
+#include "openNIManager.h"
 
 #include "Poco/Stopwatch.h"
 #include "Poco/Thread.h"
 #include "Poco/Timestamp.h"
 #include "Poco/Timer.h"
+
+
 
 
 using Poco::Stopwatch;
@@ -56,22 +57,8 @@ public:
 	void mousePressed(int x, int y, int button);
 	void mouseReleased(int x, int y, int button);
 	void windowResized(int w, int h);
-
-	ofxOpenNIContext	openNIContext;
-	ofxDepthGenerator	openNIDepth;
-	ofxImageGenerator	openNIImage;
-	ofxUserGenerator	openNIUser;
-	ofxTrackedUser   *  trackedUser;
-    ofxHardwareDriver	hardware;
     
-	int					nearThreshold, farThreshold;
-    
-    
-    ofVec3f             rightHand, head;
-    
-    float               lastLeftZ, predictiveZ;
-    
-    float leftHandRelativePos;
+    openNIManager oni;
     
     // audio
     ofxAudioUnitInput   voice;
@@ -106,7 +93,6 @@ public:
     vector<ofPolyline> contoursVoice, contoursFx, contoursDrums, contoursBass;
     
     ofxPostProcessing post;
-    
 };
 
 #endif

@@ -72,6 +72,8 @@ void seqTimerFunc(Poco::Timestamp::TimeDiff curTime)
 //--------------------------------------------------------------
 void testApp::setup() {
     
+    oni.setup();
+    
     //audiounit setup
     
     wobble.loadCustomPreset("presets/resonant_evil_wobble.aupreset");
@@ -140,7 +142,7 @@ void testApp::setup() {
     numBeats = 8;
     beatLocked = false;
     
-    lastLeftZ = predictiveZ = 0;
+//    lastLeftZ = predictiveZ = 0;
     
     reverbOn = false;
     showDone = false;
@@ -154,24 +156,6 @@ void testApp::setup() {
 	ofBackground(0, 0, 0);
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
-
-	//open NI
-    hardware.setup();
-	    
-	openNIContext.setup();	
-	openNIDepth.setup(&openNIContext);
-	openNIImage.setup(&openNIContext);
-    
-	openNIUser.setup(&openNIContext);
-	openNIUser.setSmoothing(0.8);				// built in openni skeleton smoothing...
-	openNIUser.setUseMaskPixels(true);
-	openNIUser.setUseCloudPoints(false);
-	openNIUser.setMaxNumberOfUsers(1);					
-
-	openNIContext.toggleRegisterViewport();
-	openNIContext.toggleMirror();
-    
-    
         
     alfabet.loadFont("fonts/Alfphabet-IV.ttf", 30);
     calibrate = true;
@@ -200,46 +184,19 @@ void testApp::setup() {
 
 //--------------------------------------------------------------
 void testApp::update(){
-    hardware.update();
+ 
+    oni.update();
+    leftHand = oni.leftHand;
     
-    // update all nodes
-    openNIContext.update();
-    openNIDepth.update();
-    openNIImage.update();
-    openNIUser.update();
-    trackedUser = openNIUser.getTrackedUser(1);
     
     voiceTap.getSamples(voiceSamples);
     fxTap.getSamples(fxSamples);
     bassTap.getSamples(bassSamples);
     drumTap.getSamples(drumSamples);
 
-    
-    float leftX = ofMap(trackedUser->left_lower_arm.position[1].X, trackedUser->hip.position[0].X, trackedUser->hip.position[0].X - abs(trackedUser->hip.position[0].Y - trackedUser->neck.position[0].Y), 0.0, 1.0, true);
-    
-    float leftY = ofMap(trackedUser->left_lower_arm.position[1].Y, trackedUser->hip.position[0].Y, trackedUser->neck.position[0].Y, 0.0, 1.0, true);
-    float leftZ = trackedUser->left_lower_arm.position[1].Z-trackedUser->neck.position[0].Z;
-    
-    predictiveZ = leftZ + (leftZ - lastLeftZ);
-    lastLeftZ = leftZ;
-    
-    leftHand.set(leftX, leftY, leftZ);
-    
-    float rightX = ofMap(trackedUser->right_lower_arm.position[1].X, trackedUser->hip.position[0].X, trackedUser->hip.position[0].X + abs(trackedUser->hip.position[0].Y - trackedUser->neck.position[0].Y), 0.0, 1.0, true);
-    
-    float rightY = ofMap(trackedUser->right_lower_arm.position[1].Y, trackedUser->hip.position[0].Y, trackedUser->neck.position[0].Y, 0.0, 1.0, true);
-    
-    float rightZ = trackedUser->right_lower_arm.position[1].Z-trackedUser->neck.position[0].Z;
-    
-    rightHand.set(rightX, rightY, rightZ);
-    
-    head.set(trackedUser->neck.position[1].X,
-             480 - trackedUser->neck.position[1].Y,
-             trackedUser->neck.position[1].Z);
-
     if (calibrate) {
-        if (trackedUser->left_lower_arm.position[1].X > 0  &&
-            trackedUser->left_lower_arm.position[1].Y > 0 ) {
+        if (oni.trackedUser->left_lower_arm.position[1].X > 0  &&
+            oni.trackedUser->left_lower_arm.position[1].Y > 0 ) {
             calibrate = false;
             glassShattering.play();
             drone.midiNoteOn(52, 127);
@@ -248,7 +205,7 @@ void testApp::update(){
     else {
         ofImage mask;
         mask.allocate(640,480, OF_IMAGE_GRAYSCALE);
-        mask.setFromPixels(openNIUser.getUserPixels(1), 640, 480, OF_IMAGE_GRAYSCALE); //
+        mask.setFromPixels(oni.openNIUser.getUserPixels(1), 640, 480, OF_IMAGE_GRAYSCALE); //
         
         contourFinder.findContours(mask);
         
@@ -271,13 +228,13 @@ void testApp::update(){
         }
 
         
-        float remixX = ofMap(head.x, 185, 500, 0.0, 1.0, true);
+        float remixX = ofMap(oni.head.x, 185, 500, 0.0, 1.0, true);
         drone.setParameter(16, kAudioUnitScope_Global, remixX);
         
-        float remixZ = ofMap(head.z, 3000, 2000, 0.0, 1.0, true);
+        float remixZ = ofMap(oni.head.z, 3000, 2000, 0.0, 1.0, true);
         drone.setParameter(17, kAudioUnitScope_Global, remixZ);
 
-        if (head.y < 160 && !showDone) {
+        if (oni.head.y < 160 && !showDone) {
             drone.midiNoteOff(52, 0);
             bassDrop.play();
             technoDrop.play();
@@ -288,8 +245,8 @@ void testApp::update(){
             showDone = true;
         }
         
-        if (head.z > 1400) {  // 2300 videology
-            if (head.x < 310) { 
+        if (oni.head.z > 1400) {  // 2300 videology
+            if (oni.head.x < 310) {
                 backLeftQuadrant();
             }
             else { 
@@ -301,7 +258,7 @@ void testApp::update(){
             voiceVol = ofMap(leftHand.z, -350, -500, 0.0, 1.0, true);
             voiceLevel.setInputVolume(voiceVol);
             
-            if (head.x < 310) {
+            if (oni.head.x < 310) {
                 frontLeftQuadrant();
             }
             else { 
@@ -363,17 +320,17 @@ void testApp::backLeftQuadrant(){
 //    wobble.setVolume(wobbleVol);
     
     wobble.setParameter(16, kAudioUnitScope_Global, leftHand.y);
-    wobble.setParameter(17, kAudioUnitScope_Global, leftHand.x);    
+    wobble.setParameter(17, kAudioUnitScope_Global, leftHand.x);
 }
 
 //--------------------------------------------------------------
 void testApp::backRightQuadrant(){
     if (wobbleOn) wobbleOn = false;
     
-    if (trackedUser->left_upper_leg.position[1].Y < trackedUser->left_upper_leg.position[0].Y && kickOn)
+    if (oni.trackedUser->left_upper_leg.position[1].Y < oni.trackedUser->left_upper_leg.position[0].Y && kickOn)
         beatLocked = true;
     
-    if (trackedUser->right_upper_leg.position[1].Y < trackedUser->right_upper_leg.position[0].Y)
+    if (oni.trackedUser->right_upper_leg.position[1].Y < oni.trackedUser->right_upper_leg.position[0].Y)
         beatLocked = false;
     
     
@@ -396,13 +353,13 @@ void testApp::backRightQuadrant(){
         
         kickOn = (leftHand.z < -350) ? true : false;
         
-        if (rightHand.z < -350) {
-            float center_freq = 60 + rightHand.y * 5000;
+        if (oni.rightHand.z < -350) {
+            float center_freq = 60 + oni.rightHand.y * 5000;
             bandpass.setParameter(kBandpassParam_CenterFrequency, kAudioUnitScope_Global, center_freq);
             
-            float bandwidth = 100 + rightHand.x * 11000;
+            float bandwidth = 100 + oni.rightHand.x * 11000;
             bandpass.setParameter(kBandpassParam_Bandwidth, kAudioUnitScope_Global, bandwidth);
-            mixer.setInputVolume(0.9 - rightHand.x / 3.0, 1);
+            mixer.setInputVolume(0.9 - oni.rightHand.x / 3.0, 1);
         }
         
     }
@@ -415,8 +372,8 @@ void testApp::draw(){
     if (calibrate) {
         ofSetColor(255, 255, 255);
 
-        openNIDepth.draw();
-        openNIUser.draw();
+        oni.openNIDepth.draw();
+        oni.openNIUser.draw();
         
         
         ofLine(0, 475, 640, 475);
@@ -425,24 +382,24 @@ void testApp::draw(){
         ofLine(0, 400, 640, 400);
         
         ofSetColor(255, 255, 0);
-        float zDiff = trackedUser->left_lower_arm.position[1].Z - trackedUser->neck.position[0].Z;
+        float zDiff = oni.trackedUser->left_lower_arm.position[1].Z - oni.trackedUser->neck.position[0].Z;
         
         stringstream msg;
 
         msg
         << "FPS   : " << ofToString(ofGetFrameRate()) << "  " << endl
         << endl
-        << "head.x : " << ofToString(head.x, 0) << endl
-        << "head.y : " << ofToString(head.y, 0) << endl
-        << "head.z : " << ofToString(head.z, 0) << endl
+        << "head.x : " << ofToString(oni.head.x, 0) << endl
+        << "head.y : " << ofToString(oni.head.y, 0) << endl
+        << "head.z : " << ofToString(oni.head.z, 0) << endl
         << "left.z : " << ofToString(leftHand.z, 0) << endl
-        << "leftpredictive: " << ofToString(predictiveZ, 0) << endl
+        << "leftpredictive: " << ofToString(oni.predictiveZ, 0) << endl
         << "leftPlaying : " << ofToString(leftPlaying) << endl
         << "wobbleOn : " << ofToString(wobbleOn) << endl
         << "note : " << ofToString(note) << endl
         << endl
-        << "left knee : " << ofToString(trackedUser->left_upper_leg.position[1].Y) << endl
-        << "left hip : " << ofToString(trackedUser->left_upper_leg.position[0].Y) << endl
+        << "left knee : " << ofToString(oni.trackedUser->left_upper_leg.position[1].Y) << endl
+        << "left hip : " << ofToString(oni.trackedUser->left_upper_leg.position[0].Y) << endl
         << "beatLocked : " << ofToString(beatLocked) << endl
         << "delaytime:" << ofToString(delayTime, 4) << endl ;
     //    << "left.x : " << ofToString(leftHand.x) << endl
@@ -528,10 +485,10 @@ void testApp::keyPressed(int key){
 	switch (key) {
 
 		case 357: // up key
-			hardware.setTiltAngle(hardware.tilt_angle++);
+			oni.hardware.setTiltAngle(oni.hardware.tilt_angle++);
 			break;
 		case 359: // down key
-			hardware.setTiltAngle(hardware.tilt_angle--);
+			oni.hardware.setTiltAngle(oni.hardware.tilt_angle--);
 			break;
             
         case 'w':

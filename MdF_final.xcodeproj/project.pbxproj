@@ -73,9 +73,9 @@
 		90AD60AB1890E50E0020B2FF /* PixelatePass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90AD609B1890E50E0020B2FF /* PixelatePass.cpp */; };
 		90AD60AC1890E50E0020B2FF /* PostProcessing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90AD609D1890E50E0020B2FF /* PostProcessing.cpp */; };
 		90AD60AD1890E50E0020B2FF /* RenderPass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90AD609F1890E50E0020B2FF /* RenderPass.cpp */; };
+		90AD60B31890F51B0020B2FF /* openNIManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 90AD60B11890F51B0020B2FF /* openNIManager.cpp */; };
 		9331406E158F8D63001469AA /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9331406C158F8D63001469AA /* AudioUnit.framework */; };
 		9331406F158F8D63001469AA /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9331406D158F8D63001469AA /* CoreAudioKit.framework */; };
-		933140861590C6B4001469AA /* squeezebox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 933140851590C6B4001469AA /* squeezebox.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -379,11 +379,11 @@
 		90AD609E1890E50E0020B2FF /* PostProcessing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostProcessing.h; sourceTree = "<group>"; };
 		90AD609F1890E50E0020B2FF /* RenderPass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderPass.cpp; sourceTree = "<group>"; };
 		90AD60A01890E50E0020B2FF /* RenderPass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderPass.h; sourceTree = "<group>"; };
+		90AD60B11890F51B0020B2FF /* openNIManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = openNIManager.cpp; sourceTree = "<group>"; };
+		90AD60B21890F51B0020B2FF /* openNIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = openNIManager.h; sourceTree = "<group>"; };
 		90E15C0D16D296E900FA0972 /* ofxTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxTimer.h; path = ../../../../of_v0072_osx_release/addons/ofxAppUtils/src/ofxTimer.h; sourceTree = "<group>"; };
 		9331406C158F8D63001469AA /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
 		9331406D158F8D63001469AA /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = /System/Library/Frameworks/CoreAudioKit.framework; sourceTree = "<absolute>"; };
-		933140841590C04B001469AA /* squeezeBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = squeezeBox.h; sourceTree = "<group>"; };
-		933140851590C6B4001469AA /* squeezebox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = squeezebox.cpp; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -1012,8 +1012,8 @@
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* testApp.h */,
 				E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */,
-				933140841590C04B001469AA /* squeezeBox.h */,
-				933140851590C6B4001469AA /* squeezebox.cpp */,
+				90AD60B11890F51B0020B2FF /* openNIManager.cpp */,
+				90AD60B21890F51B0020B2FF /* openNIManager.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -1141,11 +1141,11 @@
 				77781EC714BA9AE300CD45EF /* ofxTrackedHand.cpp in Sources */,
 				77781EC814BA9AE300CD45EF /* ofxTrackedUser.cpp in Sources */,
 				77781EC914BA9AE300CD45EF /* ofxUserGenerator.cpp in Sources */,
-				933140861590C6B4001469AA /* squeezebox.cpp in Sources */,
 				907B3E0F188F595A004A0048 /* ofxAudioUnitTap.cpp in Sources */,
 				90AD60A41890E50E0020B2FF /* ConvolutionPass.cpp in Sources */,
 				907B3E09188F595A004A0048 /* ofxAudioUnitMixer.cpp in Sources */,
 				90AD60A51890E50E0020B2FF /* DofAltPass.cpp in Sources */,
+				90AD60B31890F51B0020B2FF /* openNIManager.cpp in Sources */,
 				907B3E08188F595A004A0048 /* ofxAudioUnitMidi.cpp in Sources */,
 				90AD606B188F80070020B2FF /* Wrappers.cpp in Sources */,
 				90AD60AB1890E50E0020B2FF /* PixelatePass.cpp in Sources */,
