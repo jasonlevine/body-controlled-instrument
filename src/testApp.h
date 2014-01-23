@@ -5,6 +5,8 @@
 #include "ofxOpenNI.h"
 #include "ofxAudioUnit.h"
 #include "ofxCv.h"
+#include "ofxPostProcessing.h"
+
 
 #include "Poco/Stopwatch.h"
 #include "Poco/Thread.h"
@@ -102,6 +104,8 @@ public:
     //baudio
     vector<float> voiceSamples, fxSamples, drumSamples, bassSamples;
     vector<ofPolyline> contoursVoice, contoursFx, contoursDrums, contoursBass;
+    
+    ofxPostProcessing post;
     
 };
 

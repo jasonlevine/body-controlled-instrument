@@ -37,7 +37,6 @@ void seqTimerFunc(Poco::Timestamp::TimeDiff curTime)
                 
             }
             
-            
             if (seqCounter % numBeats == 0 && wobbleOn ) {
 //                if (leftHand.z < -350) {
 
@@ -113,7 +112,7 @@ void testApp::setup() {
     drumTap.connectTo(mixer, 1);
     bassTap.connectTo(mixer, 2);
     fxTap.connectTo(mixer, 3);
-    mixer.setInputVolume(0.8, 0);
+    mixer.setInputVolume(0.6, 0);
     mixer.setInputVolume(0.8, 1);
     mixer.setInputVolume(1.0, 2);
     mixer.setInputVolume(0.8, 3);
@@ -188,6 +187,13 @@ void testApp::setup() {
     fxSamples.assign(512, 0.0);
     drumSamples.assign(512, 0.0);
     bassSamples.assign(512, 0.0);
+    
+    //postprocessing
+    post.init(1920, 1080);
+    post.createPass<FxaaPass>()->setEnabled(true);
+    post.createPass<DofPass>()->setEnabled(true);
+    post.createPass<BloomPass>()->setEnabled(true);
+
             
 }
 
@@ -451,6 +457,7 @@ void testApp::draw(){
 //        openNIUser.draw();
 //        contourFinder.draw();
         ofSetFullscreen(true);
+        post.begin();
         ofPushMatrix();
         ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
         ofScale(ofGetHeight()/480. / 3. * 4, ofGetHeight()/480.);
@@ -508,6 +515,7 @@ void testApp::draw(){
 //            contoursBass[i].draw();
         }
         ofPopMatrix();
+        post.end();
     }
 }
 
